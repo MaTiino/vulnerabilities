@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/cisco_app
+      - CISCO_TOKEN_URL=your_token_url
+      - CISCO_CLIENT_ID=your_client_id
+      - CISCO_CLIENT_SECRET=your_client_secret
+      - CISCO_API_BASE=your_api_base
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=cisco_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
