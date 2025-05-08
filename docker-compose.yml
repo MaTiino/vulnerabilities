@@ -1,36 +1,37 @@
-version: '3'
+version: '3.8'
 
 services:
   backend:
     build: .
     ports:
       - "8000:8000"
+    volumes:
+      - ./app:/app
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/cisco_app
-      - CISCO_TOKEN_URL=your_token_url
-      - CISCO_CLIENT_ID=your_client_id
-      - CISCO_CLIENT_SECRET=your_client_secret
-      - CISCO_API_BASE=your_api_base
+      - CISCO_TOKEN_URL=${CISCO_TOKEN_URL:-your_token_url}
+      - CISCO_CLIENT_ID=${CISCO_CLIENT_ID:-your_client_id}
+      - CISCO_CLIENT_SECRET=${CISCO_CLIENT_SECRET:-your_client_secret}
+      - CISCO_API_BASE=${CISCO_API_BASE:-your_api_base}
     depends_on:
-      - db
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
+      db:
+        condition: service_healthy
 
   db:
     image: postgres:13
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d cisco_app"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=cisco_app
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
 volumes:
   postgres_data:

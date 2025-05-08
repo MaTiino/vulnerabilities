@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, Date, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, Text, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from db import Base
+from datetime import datetime
 
 class DeviceGroup(Base):
     __tablename__ = "device_groups"

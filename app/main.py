@@ -12,6 +12,7 @@ Base.metadata.create_all(bind=engine)
 
 @app.on_event("startup")
 def startup_event():
+    init_db()  # Add this line
     start_scheduler()
 
 def get_db():
