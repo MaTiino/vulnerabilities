@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
   backend:
@@ -6,7 +6,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app
+      - .:/app
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/cisco_app
       - CISCO_TOKEN_URL=${CISCO_TOKEN_URL:-your_token_url}
