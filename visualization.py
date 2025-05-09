@@ -8,14 +8,12 @@ router = APIRouter()
 
 @router.get("/rack-view")
 def get_rack_view(db: Session = Depends(get_db)):
-    # This would return data for frontend visualization
     groups = db.query(DeviceGroup).all()
     
     rack_data = []
     for group in groups:
         devices = []
         for device in group.devices:
-            # Get matched advisories for each device
             advisories = match_advisories_to_devices(db, [{"model": device.model, "id": device.id}])
             devices.append({
                 "id": device.id,

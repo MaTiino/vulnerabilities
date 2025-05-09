@@ -1,7 +1,6 @@
 FROM python:3.9
 WORKDIR /app
 
-# Set Python path to include current directory
 ENV PYTHONPATH=/app
 
 COPY requirements.txt .

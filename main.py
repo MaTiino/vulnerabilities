@@ -8,10 +8,8 @@ from pydantic import BaseModel
 from typing import List, Optional
 from fastapi.middleware.cors import CORSMiddleware
 
-# Initialize FastAPI app once
 app = FastAPI()
 
-# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,14 +18,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Create database tables
 Base.metadata.create_all(bind=engine)
 
 @app.on_event("startup")
 def startup_event():
     start_scheduler()
 
-# Dependency
 def get_db():
     db = SessionLocal()
     try:
@@ -35,7 +31,6 @@ def get_db():
     finally:
         db.close()
 
-# Pydantic models
 class DeviceInput(BaseModel):
     model: str
     os_version: str = ""
@@ -46,7 +41,6 @@ class DeviceInput(BaseModel):
 class DeviceGroupInput(BaseModel):
     name: str
 
-# Device endpoints
 @app.post("/devices/", response_model=dict)
 def add_device(device: DeviceInput, db: Session = Depends(get_db)):
     db_device = Device(**device.dict())
@@ -102,7 +96,6 @@ def delete_device(device_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Device deleted successfully"}
 
-# Group endpoints
 @app.post("/groups/", response_model=dict)
 def create_group(group: DeviceGroupInput, db: Session = Depends(get_db)):
     db_group = DeviceGroup(name=group.name)
@@ -116,7 +109,6 @@ def list_groups(db: Session = Depends(get_db)):
     groups = db.query(DeviceGroup).all()
     return [{"id": g.id, "name": g.name, "device_count": len(g.devices)} for g in groups]
 
-# Advisory endpoints
 @app.get("/alerts")
 def get_alerts(db: Session = Depends(get_db)):
     advisories = db.query(Advisory).order_by(Advisory.publication_date.desc()).all()

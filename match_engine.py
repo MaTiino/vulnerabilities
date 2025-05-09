@@ -9,10 +9,9 @@ def match_advisories_to_devices(db: Session, devices: list):
     for adv in advisories:
         affected_devices = []
         for device in devices:
-            # More sophisticated matching logic
             if (device["model"].lower() in adv.product.lower() or
                 any(part.lower() in adv.product.lower() 
-                    for part in device["model"].split())):  # Match model parts
+                    for part in device["model"].split())):
                 
                 affected_devices.append({
                     "model": device["model"],
