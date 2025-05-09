@@ -3,25 +3,21 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-# Database URL configuration (uses environment variable with SQLite fallback)
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@db:5432/cisco_app")
 
-# Create SQLAlchemy engine
 engine = create_engine(
     DATABASE_URL,
-    pool_size=10,            # Basic connection pooling
-    max_overflow=20,         # Allow extra connections under load
-    pool_pre_ping=True       # Check connections before using them
+    pool_size=10,
+    max_overflow=20,
+    pool_pre_ping=True
 )
 
-# Session factory
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
     bind=engine
 )
 
-# Base class for models
 Base = declarative_base()
 
 def get_db():
